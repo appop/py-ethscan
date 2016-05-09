@@ -1,18 +1,22 @@
 
 # API Wrapper
+# Naming convention follows the geth JSON RPC api
 
 import requests
 import json
 
 class api:
 
-
-    url = "http://localhost:8545"
+    url = ""
     headers = {'content-type': 'application/json'}
+
+    def __init__(self, url="http://localhost", port="8545"):
+        self.url = url + ":" + port
 
 
     def apiCall(self, method, params=[]):
-        payload = dict(jsonrpc="2.0", method=method, params=params, id=1)
+        # type: (object, object) -> object
+        payload = dict(jsonrpc="2.0", method=method, params=params, id=1) # we are making synchronous calls, so id can be any value
 
         response = requests.post(self.url, data=json.dumps(payload), headers=self.headers).json()
 
@@ -100,320 +104,361 @@ class api:
             "eth_blockNumber" 
         )
 
-    def eth_getBalance (self, address, default_block): 
+    def eth_getBalance (self, address, default_block="latest"):
 
         return self.apiCall(
             "eth_getBalance",
             [address, default_block]
         )
         
-    def eth_getStorageAt(self): 
+    def eth_getStorageAt(self, data, quantity, default_block="latest"):
 
         return self.apiCall(
             "eth_getStorageAt",
-            ["0x407d73d8a49eeb85d32cf465507dd71d507100c1", "0x0", "0x2"]
+            [data, quantity, default_block]
         )
     
-    def eth_getTransactionCount(self): 
+    def eth_getTransactionCount(self, data, default_block="latest"):
 
         return self.apiCall(
             "eth_getTransactionCount",
-            ["0x407d73d8a49eeb85d32cf465507dd71d507100c1","latest"]
+            [data, default_block]
         )
 
-    def eth_getBlockTransactionCountByHash(self): 
+    def eth_getBlockTransactionCountByHash(self, hash):
 
         return self.apiCall(
             "eth_getBlockTransactionCountByHash",
-            ["0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"]
+            [hash]
         )
 
-    def eth_getBlockTransactionCountByNumber(self): 
+    def eth_getBlockTransactionCountByNumber(self, blocknumber):
 
         return self.apiCall(
             "eth_getBlockTransactionCountByNumber",
-            ["0xe8"]
+            [blocknumber]
         )
 
-    def eth_getUncleCountByBlockHash(self): 
+    def eth_getUncleCountByBlockHash(self, hash):
 
         return self.apiCall(
             "eth_getUncleCountByBlockHash",
-            ["0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"]
+            [hash]
         )
 
-    def eth_getUncleCountByBlockNumber(self): 
+    def eth_getUncleCountByBlockNumber(self, blocknumber):
 
         return self.apiCall(
             "eth_getUncleCountByBlockNumber",
-            ["0xe8"]
+            [blocknumber]
         )
 
-    def eth_getCode(self): 
+    def eth_getCode(self, data, default_block="latest"):
 
         return self.apiCall(
             "eth_getCode",
-            ["0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b", "0x2"]
+            [data, default_block]
         )
 
-    def eth_sign(self): 
+    def eth_sign(self, address, data):
 
         return self.apiCall(
-            "eth_sign" 
+            "eth_sign",
+            [address, data]
+        )
 
-,["0xd1ade25ccd3d550a7eb532ac759cac7be09c2719", "Schoolbus"])
-    def eth_sendTransaction(self): 
+    def eth_sendTransaction(self, from_address, to_address, gas, gasPrice, value, data):
 
         return self.apiCall(
             "eth_sendTransaction",
-            #[{see above}]
+            [{
+                "from": from_address,
+                "to": to_address,
+                "gas": gas,
+                "gasPrice": gasPrice,
+                "value": value,
+                "data": data
+            }]
         )
 
-    def eth_sendRawTransaction(self): 
+    def eth_sendRawTransaction(self, rawData): 
 
         return self.apiCall(
             "eth_sendRawTransaction",
-            #[{see above}]
+            [rawData]
         )
 
-    def eth_call(self): 
+    def eth_call(self, from_address, to_address, gas, gasPrice, value, data, default_block):
 
         return self.apiCall(
             "eth_call",
-            #[{see above}]
+            [{
+                "from": from_address,
+                "to": to_address,
+                "gas": gas,
+                "gasPrice": gasPrice,
+                "value": value,
+                "data": data
+            }, default_block]
         )
 
-    def eth_estimateGas(self): 
+    def eth_estimateGas(self, from_address, to_address, gas, gasPrice, value, data, default_block):
 
         return self.apiCall(
             "eth_estimateGas",
-            #[{see above}]
+            [{
+                "from": from_address,
+                "to": to_address,
+                "gas": gas,
+                "gasPrice": gasPrice,
+                "value": value,
+                "data": data
+            }, default_block]
         )
 
-    def eth_getBlockByHash(self): 
+    def eth_getBlockByHash(self, hash, full=True):
 
         return self.apiCall(
             "eth_getBlockByHash",
-            ["0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331", true]
+            [hash, full]
         )
 
-    def eth_getBlockByNumber(self): 
+    def eth_getBlockByNumber(self, blocknumber, full=True):
 
         return self.apiCall(
             "eth_getBlockByNumber",
-            ["0x1b4", true]
+            [blocknumber, full]
         )
 
-    def eth_getTransactionByHash(self): 
+    def eth_getTransactionByHash(self, hash):
 
         return self.apiCall(
             "eth_getTransactionByHash",
-            ["0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"]
+            [hash]
         )
 
-    def eth_getTransactionByBlockHashAndIndex(self): 
+    def eth_getTransactionByBlockHashAndIndex(self, hash, index):
 
         return self.apiCall(
             "eth_getTransactionByBlockHashAndIndex",
-            ["0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b", "0x0"]
+            [hash, index]
         )
 
-    def eth_getTransactionByBlockNumberAndIndex(self): 
+    def eth_getTransactionByBlockNumberAndIndex(self, blocknumber, index):
 
         return self.apiCall(
-            "eth_getTransactionByBlockNumberAndIndex" 
+            "eth_getTransactionByBlockNumberAndIndex",
+            [blocknumber, index]
+        )
 
-,["0x29c", "0x0"])
-    def eth_getTransactionReceipt(self): 
-
-        return self.apiCall(
-            "eth_getTransactionReceipt" 
-
-,["0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"])
-    def eth_getUncleByBlockHashAndIndex(self): 
+    def eth_getTransactionReceipt(self, hash):
 
         return self.apiCall(
-            "eth_getUncleByBlockHashAndIndex" 
+            "eth_getTransactionReceipt",
+            [hash]
+        )
 
-,["0xc6ef2fc5426d6ad6fd9e2a26abeab0aa2411b7ab17f30a99d3cb96aed1d1055b", "0x0"])
+    def eth_getUncleByBlockHashAndIndex(self, hash, index):
+
+        return self.apiCall(
+            "eth_getUncleByBlockHashAndIndex",
+            [hash, index]
+        )
+
     def eth_getUncleByBlockNumberAndIndex(self): 
 
         return self.apiCall(
-            "eth_getUncleByBlockNumberAndIndex" 
+            "eth_getUncleByBlockNumberAndIndex",
+            ["0x29c", "0x0"]
+        )
 
-,["0x29c", "0x0"])
     def eth_getCompilers(self): 
 
         return self.apiCall(
             "eth_getCompilers" 
         )
 
-,[])
-    def eth_compileSolidity(self): 
+    def eth_compileSolidity(self, solidityCode):
 
         return self.apiCall(
-            "eth_compileSolidity" 
+            "eth_compileSolidity",
+            [solidityCode]
+        )
 
-,[solidityCode])
-    def eth_compileLLL(self): 
-
-        return self.apiCall(
-            "eth_compileLLL" 
-
-,["(returnlll (suicide (caller)))"])
-    def eth_compileSerpent(self): 
+    def eth_compileLLL(self, lllCode):
 
         return self.apiCall(
-            "eth_compileSerpent" 
+            "eth_compileLLL",
+            [lllCode]
+        )
 
-,[serpentCode])
-    def eth_newFilter(self): 
+    def eth_compileSerpent(self, serpentCode):
 
         return self.apiCall(
-            "eth_newFilter" 
+            "eth_compileSerpent",
+            [serpentCode]
+        )
 
-,[{"topics":["0x12341234"]}])
-    def eth_newBlockFilter(self): 
+    def eth_newFilter(self, address, topics, fromBlock="latest", toBlock="latest"):
+
+        return self.apiCall(
+            "eth_newFilter",
+            [{
+                "fromBlock": fromBlock,
+                "toBlock": toBlock,
+                "address": address,
+                "topics": topics
+            }]
+        )
+
+    def eth_newBlockFilter(self):
 
         return self.apiCall(
             "eth_newBlockFilter" 
         )
 
-,[])
     def eth_newPendingTransactionFilter(self): 
 
         return self.apiCall(
             "eth_newPendingTransactionFilter" 
         )
 
-,[])
-    def eth_uninstallFilter(self): 
+    def eth_uninstallFilter(self, filterId):
 
         return self.apiCall(
-            "eth_uninstallFilter" 
+            "eth_uninstallFilter",
+            [filterId]
+        )
 
-,["0xb"])
-    def eth_getFilterChanges(self): 
-
-        return self.apiCall(
-            "eth_getFilterChanges" 
-
-,["0x16"])
-    def eth_getFilterLogs(self): 
+    def eth_getFilterChanges(self, filterId):
 
         return self.apiCall(
-            "eth_getFilterLogs" 
+            "eth_getFilterChanges" ,
+            [filterId]
+        )
 
-,["0x16"])
-    def eth_getLogs(self): 
+    def eth_getFilterLogs(self, filterId):
 
         return self.apiCall(
-            "eth_getLogs" 
+            "eth_getFilterLogs",
+            [filterId]
+        )
 
-,[{"topics":["0x000000000000000000000000a94f5374fce5edbc8e2a8697c15331677e6ebf0b"]}])
+    def eth_getLogs(self, filter):
+
+        return self.apiCall(
+            "eth_getLogs",
+            [filter]
+        )
+
     def eth_getWork(self): 
 
         return self.apiCall(
             "eth_getWork" 
         )
 
-,[])
-    def eth_submitWork(self): 
+    def eth_submitWork(self, nonce, pow_hash, mix_digest):
 
         return self.apiCall(
-            "eth_submitWork" 
+            "eth_submitWork",
+            [nonce, pow_hash, mix_digest]
+        )
 
-, ["0x0000000000000001", "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", "0xD1GE5700000000000000000000000000D1GE5700000000000000000000000000"])
-    def eth_submitHashrate(self): 
-
-        return self.apiCall(
-            "eth_submitHashrate" 
-
-, ["0x0000000000000000000000000000000000000000000000000000000000500000", "0x59daa26581d0acd1fce254fb7e85952f4c09d0915afd33d3886cd914bc7d283c"])
-    def db_putString(self): 
+    def eth_submitHashrate(self, hashrate, id):
 
         return self.apiCall(
-            "db_putString" 
+            "eth_submitHashrate",
+            [hashrate, id]
+        )
 
-,["testDB","myKey","myString"])
-    def db_getString(self): 
-
-        return self.apiCall(
-            "db_getString" 
-
-,["testDB","myKey"])
-    def db_putHex(self): 
+    def db_putString(self, database, key, string):
 
         return self.apiCall(
-            "db_putHex" 
+            "db_putString",
+            [database, key, string]
+        )
 
-,["testDB","myKey","0x68656c6c6f20776f726c64"])
-    def db_getHex(self): 
+    def db_getString(self, database, key):
 
         return self.apiCall(
-            "db_getHex" 
+            "db_getString",
+            [database, key]
+        )
 
-,["testDB","myKey"])
+    def db_putHex(self, database, key, hex):
+
+        return self.apiCall(
+            "db_putHex",
+            [database, key, hex]
+        )
+
+    def db_getHex(self, database, key):
+
+        return self.apiCall(
+            "db_getHex",
+            [database, key]
+        )
+
     def shh_version(self): 
 
         return self.apiCall(
             "shh_version" 
         )
 
-,[])
-    def shh_post(self): 
+    def shh_post(self, from_address, to_address, topics, payload, priority, ttl):
 
         return self.apiCall(
-            "shh_post" 
+            "shh_post",
+            [{
+                "from_address": from_address,
+                "to_address": to_address,
+                "topics": topics,
+                "payload": payload,
+                "priority": priority,
+                "ttl": ttl
+        }]
+        )
 
-,[{"from":"0xc931d93e97ab07fe42d923478ba2465f2..","topics": ["0x68656c6c6f20776f726c64"],"payload":"0x68656c6c6f20776f726c64","ttl":0x64,"priority":0x64}])
     def shh_newIdentity(self): 
 
         return self.apiCall(
             "shh_newIdentity" 
         )
 
-,[])
-    def shh_hasIdentity(self): 
+    def shh_hasIdentity(self, address):
 
         return self.apiCall(
-            "shh_hasIdentity" 
-
-,["0x04f96a5e25610293e42a73908e93ccc8c4d4dc0edcfa9fa872f50cb214e08ebf61a03e245533f97284d442460f2998cd41858798ddfd4d661997d3940272b717b1"])
-    def shh_newIdentity(self): 
-
-        return self.apiCall(
-            "shh_newIdentity" 
+            "shh_hasIdentity",
+            [address]
         )
 
-,[])
-    def shh_hasIdentity(self): 
+    def shh_newFilter(self, topics, to_address):
 
         return self.apiCall(
-            "shh_hasIdentity" 
+            "shh_newFilter",
+            [{
+                "topics": topics,
+                "to": to_address
+            }]
+        )
 
-,["0x04f96a5e25610293e42a73908e93ccc8c4d4dc0edcfa9fa872f50cb214e08ebf61a03e245533f97284d442460f2998cd41858798ddfd4d661997d3940272b717b1"])
-    def shh_newFilter(self): 
-
-        return self.apiCall(
-            "shh_newFilter" 
-
-,[{"topics": ['0x12341234bf4b564f'],"to": "0x2341234bf4b2341234bf4b564f..."}])
-    def shh_uninstallFilter(self): 
+    def shh_uninstallFilter(self, filterId):
 
         return self.apiCall(
-            "shh_uninstallFilter" 
+            "shh_uninstallFilter",
+            [filterId]
+        )
 
-,["0x7"])
-    def shh_getFilterChanges(self): 
-
-        return self.apiCall(
-            "shh_getFilterChanges" 
-
-,["0x7"])
-    def shh_getMessages(self): 
+    def shh_getFilterChanges(self, filterId):
 
         return self.apiCall(
-            "shh_getMessages" 
+            "shh_getFilterChanges",
+            [filterId]
+        )
 
-,["0x7"])
+    def shh_getMessages(self, filterId):
+
+        return self.apiCall(
+            "shh_getMessages",
+            [filterId]
+        )
