@@ -9,3 +9,18 @@ Access is done via Storm, so PostgresSQL is also an option.
 
 Disclaimer:
 I'm not a professional programmer, this code is merely for recreation and self-educational purposes :-)
+
+
+Roadmap:
+
++----------------------------+----------------+
+| Module                     | Status         |
++============================+================+
+|json-rpc-api wrapper        | Done           |
++----------------------------+----------------+
+|Storm                       | Working on it  |
++----------------------------+----------------+
+|Scanner                     | Open           |
++----------------------------+----------------+
+|Frontend                    | Open           |
++----------------------------+----------------+
